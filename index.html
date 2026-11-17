@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nursing Group D Portal | بوابة تمريض جروب D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- React 18, Babel & GSAP Animation Engine -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #f0f6fc;
+      --bg-surface: rgba(255, 255, 255, 0.82);
+      --bg-card: rgba(255, 255, 255, 0.94);
+      --bg-elevated: #e6eff8;
+      --text-primary: #09111e;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border-color: rgba(14, 165, 233, 0.18);
+      --accent: #0d9488;
+      --accent-2: #0284c7;
+      --accent-3: #6366f1;
+      --accent-glow: rgba(13, 148, 136, 0.22);
+      --danger: #e11d48;
+      --shadow-card: 0 14px 34px -10px rgba(15, 23, 42, 0.09);
+      --shadow-hover: 0 26px 54px -12px rgba(13, 148, 136, 0.26);
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius-md: 13px;
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #040812;
+      --bg-surface: rgba(11, 18, 34, 0.78);
+      --bg-card: rgba(15, 23, 42, 0.88);
+      --bg-elevated: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(45, 212, 191, 0.18);
+      --accent: #2dd4bf;
+      --accent-2: #38bdf8;
+      --accent-3: #818cf8;
+      --accent-glow: rgba(45, 212, 191, 0.24);
+      --danger: #fb7185;
+      --shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.55);
+      --shadow-hover: 0 28px 60px -12px rgba(45, 212, 191, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.65;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .en {
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    #dnaCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .aurora-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.5;
+      animation: auroraDrift 16s ease-in-out infinite alternate;
+    }
+
+    .orb-a {
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+      top: -120px;
+      right: -80px;
+    }
+
+    .orb-b {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.18), transparent 70%);
+      bottom: -80px;
+      left: -100px;
+      animation-delay: -7s;
+    }
+
+    @keyframes auroraDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-45px, 50px) scale(1.16); }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 76px;
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      text-decoration: none;
+      color: var(--text-primary);
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      box-shadow: 0 8px 22px var(--accent-glow);
+      flex-shrink: 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .brand-title h1 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .brand-title span {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      display: block;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #ffffff;
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px var(--accent-glow);
+    }
+
+    .btn-glass {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .btn-glass:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+    }
+
+    /* Animated Border Hero Box */
+    .hero {
+      padding: 32px 0 24px;
+    }
+
+    .hero-frame {
+      position: relative;
+      border-radius: 30px;
+      padding: 1.5px;
+      background: linear-gradient(120deg, var(--border-color), var(--accent), var(--accent-2), var(--border-color));
+      background-size: 250% 250%;
+      animation: borderFlow 8s linear infinite;
+      box-shadow: var(--shadow-card);
+    }
+
+    @keyframes borderFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hero-box {
+      background: var(--bg-card);
+      backdrop-filter: blur(22px);
+      border-radius: 28.5px;
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.65); }
+      70% { box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+    }
+
+    .hero h2 {
+      font-size: clamp(1.65rem, 3vw, 2.38rem);
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 22px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .search-wrapper {
+      position: relative;
+      max-width: 500px;
+    }
+
+    .search-wrapper svg {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 14px 46px 14px 18px;
+      border-radius: 15px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.94rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .search-wrapper input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+
+    /* Telemetry Panel */
+    .telemetry-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 22px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ecg-screen {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px 16px;
+      overflow: hidden;
+    }
+
+    .ecg-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .ecg-svg {
+      width: 100%;
+      height: 44px;
+      stroke: var(--accent);
+      stroke-width: 2.5;
+      fill: none;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 440;
+      animation: ecgFlow 2.6s linear infinite;
+      filter: drop-shadow(0 0 7px var(--accent-glow));
+    }
+
+    @keyframes ecgFlow {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .kpi-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .kpi-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .kpi-item strong {
+      display: block;
+      font-size: 1.38rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .kpi-item span {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* Subjects */
+    .section-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .subjects-scroller {
+      display: flex;
+      gap: 11px;
+      overflow-x: auto;
+      padding: 4px 2px 12px;
+      margin-bottom: 18px;
+      scrollbar-width: none;
+    }
+
+    .subjects-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subject-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-color);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .subject-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-3px);
+    }
+
+    .subject-chip.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: 0 10px 24px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .chip-count {
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .subject-chip.active .chip-count {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    /* Category Tabs */
+    .category-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--bg-card);
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    .cat-tab {
+      padding: 9px 17px;
+      border-radius: 11px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.24s ease;
+    }
+
+    .cat-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .cat-tab.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    /* 3D Interactive Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
+      margin-bottom: 64px;
+      perspective: 1200px;
+    }
+
+    .resource-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      box-shadow: var(--shadow-card);
+      transform-style: preserve-3d;
+      transition: transform 0.16s ease-out, box-shadow 0.28s ease, border-color 0.28s ease;
+      overflow: hidden;
+    }
+
+    .resource-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), var(--accent-glow), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .resource-card:hover::before {
+      opacity: 1;
+    }
+
+    .resource-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-badges {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .badge-subject {
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 9px;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .badge-type {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 9px;
+    }
+
+    .badge-slides {
+      background: rgba(2, 132, 199, 0.14);
+      color: #0284c7;
+    }
+
+    [data-theme="dark"] .badge-slides {
+      color: #38bdf8;
+    }
+
+    .badge-quiz {
+      background: rgba(13, 148, 136, 0.15);
+      color: var(--accent);
+    }
+
+    .badge-videos {
+      background: rgba(234, 88, 12, 0.14);
+      color: #ea580c;
+    }
+
+    [data-theme="dark"] .badge-videos {
+      color: #fb923c;
+    }
+
+    .card-content h3 {
+      font-size: 1.07rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.45;
+    }
+
+    .card-sub {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .card-footer .btn-primary {
+      flex: 1;
+    }
+
+    .btn-delete {
+      color: var(--danger);
+    }
+
+    .btn-delete:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .empty-box {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 64px 20px;
+      background: var(--bg-card);
+      border: 1.5px dashed var(--border-color);
+      border-radius: var(--radius-xl);
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 18, 0.76);
+      backdrop-filter: blur(10px);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      z-index: 120;
+      animation: fadeOverlay 0.22s ease;
+    }
+
+    @keyframes fadeOverlay {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 520px;
+      padding: 28px;
+      box-shadow: 0 30px 65px rgba(0, 0, 0, 0.45);
+      animation: modalSpring 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSpring {
+      from { opacity: 0; transform: scale(0.92) translateY(16px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .modal-top h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+    }
+
+    .tip-box {
+      margin-top: 15px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      font-size: 0.81rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: var(--bg-surface);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: var(--text-primary);
+      color: var(--bg-card);
+      padding: 12px 18px;
+      border-radius: 13px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+      z-index: 200;
+      animation: toastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastSlide {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 880px) {
+      .hero-box {
+        grid-template-columns: 1fr;
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .brand-title span { display: none; }
+      .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="dnaCanvas"></canvas>
+  <div class="aurora-orb orb-a"></div>
+  <div class="aurora-orb orb-b"></div>
+
+  <div id="root"></div>
+
+  <!-- Embedded Dataset -->
+  <script type="application/json" id="initial-data">
+[
+  {
+    "id": 101,
+    "subject": "Anatomy",
+    "category": "slides",
+    "title": "Lecture 01: Anatomical Position & Body Planes",
+    "doctor": "محاضرة PDF • Google Drive",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 102,
+    "subject": "Anatomy",
+    "category": "quiz",
+    "title": "Anatomy Unit 1 — MCQ Question Bank",
+    "doctor": "بنك أسئلة تدريبي",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 103,
+    "subject": "Anatomy",
+    "category": "videos",
+    "title": "Video 01: Skeletal System Landmarks",
+    "doctor": "فيديو شرح • Google Drive",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 104,
+    "subject": "Physiology",
+    "category": "slides",
+    "title": "Lecture 01: Cell Membrane Transport & Homeostasis",
+    "doctor": "محاضرة PDF • Google Drive",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 105,
+    "subject": "Physiology",
+    "category": "quiz",
+    "title": "Physiology Self-Assessment Questions",
+    "doctor": "بنك أسئلة MCQ",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 106,
+    "subject": "Microbiology",
+    "category": "slides",
+    "title": "Lecture 01: Bacterial Cell Structure & Classification",
+    "doctor": "محاضرة PDF • Google Drive",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 107,
+    "subject": "Biochemistry",
+    "category": "slides",
+    "title": "Lecture 01: Carbohydrates & Metabolic Pathways",
+    "doctor": "محاضرة PDF • Google Drive",
+    "url": "https://drive.google.com"
+  },
+  {
+    "id": 108,
+    "subject": "Computer Science",
+    "category": "slides",
+    "title": "Lecture 01: Medical Informatics & Hospital Systems",
+    "doctor": "محاضرة PDF • Google Drive",
+    "url": "https://drive.google.com"
+  }
+]
+  </script>
+
+  <!-- 3D Rotating DNA Double-Helix & Cellular Particles Engine -->
+  <script>
+    (function init3DDnaEngine() {
+      const canvas = document.getElementById("dnaCanvas");
+      const ctx = canvas.getContext("2d");
+      let w, h, phase = 0;
+      const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+      const particles = Array.from({ length: 42 }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random() * 2 + 1,
+        vx: (Math.random() - 0.5) * 0.0005,
+        vy: (Math.random() - 0.5) * 0.0005
+      }));
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener("resize", resize);
+      window.addEventListener("mousemove", e => {
+        mouse.targetX = (e.clientX / w - 0.5) * 40;
+        mouse.targetY = (e.clientY / h - 0.5) * 30;
+      });
+      resize();
+
+      function render() {
+        ctx.clearRect(0, 0, w, h);
+        phase += 0.018;
+        mouse.x += (mouse.targetX - mouse.x) * 0.06;
+        mouse.y += (mouse.targetY - mouse.y) * 0.06;
+
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        const c1 = isDark ? "45, 212, 191" : "13, 148, 136";
+        const c2 = isDark ? "56, 189, 248" : "2, 132, 199";
+
+        // Ambient floating particles
+        particles.forEach(p => {
+          p.x = (p.x + p.vx + 1) % 1;
+          p.y = (p.y + p.vy + 1) % 1;
+          ctx.beginPath();
+          ctx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${c1}, ${isDark ? 0.25 : 0.18})`;
+          ctx.fill();
+        });
+
+        // 3D DNA Double Helix along the left/background
+        const helixX = (w < 768 ? w * 0.5 : w * 0.16) + mouse.x;
+        const pairs = 26;
+        const spacing = (h + 120) / pairs;
+        const radius = w < 768 ? 55 : 78;
+
+        for (let i = 0; i < pairs; i++) {
+          const y = i * spacing - 60 + mouse.y * 0.4;
+          const angle = phase + i * 0.34;
+          const sinA = Math.sin(angle);
+          const cosA = Math.cos(angle);
+
+          const x1 = helixX + sinA * radius;
+          const x2 = helixX - sinA * radius;
+          const scale1 = (cosA + 1.8) * 0.55;
+          const scale2 = (-cosA + 1.8) * 0.55;
+
+          // Base-pair rung
+          ctx.beginPath();
+          ctx.moveTo(x1, y);
+          ctx.lineTo(x2, y);
+          ctx.strokeStyle = `rgba(${c2}, ${isDark ? 0.16 : 0.12})`;
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+
+          // Strand A node
+          ctx.beginPath();
+          ctx.arc(x1, y, 3.2 * scale1, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${c1}, ${0.22 * scale1})`;
+          ctx.fill();
+
+          // Strand B node
+          ctx.beginPath();
+          ctx.arc(x2, y, 3.2 * scale2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${c2}, ${0.22 * scale2})`;
+          ctx.fill();
+        }
+
+        requestAnimationFrame(render);
+      }
+      render();
+    })();
+  </script>
+
+  <!-- React 18 Application -->
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    /* كلمة مرور الأدمن - غيّرها لأي باسورد تحبه */
+    const ADMIN_PASSWORD = "dD2005#2026";
+
+    const SUBJECTS = [
+      { key: "All", label: "جميع المواد", isEn: false },
+      { key: "Anatomy", label: "Anatomy", isEn: true },
+      { key: "Physiology", label: "Physiology", isEn: true },
+      { key: "Microbiology", label: "Microbiology", isEn: true },
+      { key: "Biochemistry", label: "Biochemistry", isEn: true },
+      { key: "Computer Science", label: "Computer Science", isEn: true }
+    ];
+
+    const CATEGORIES = [
+      { key: "all", label: "الكل" },
+      { key: "slides", label: "محاضرات / Slides" },
+      { key: "quiz", label: "أسئلة / Quiz & Banks" },
+      { key: "videos", label: "فيديوهات / Videos" }
+    ];
+
+    function ResourceCard({ item, isAdmin, onCopy, onDelete }) {
+      const cardRef = useRef(null);
+
+      const handleMouseMove = (e) => {
+        const el = cardRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        el.style.setProperty("--mx", `${x}px`);
+        el.style.setProperty("--my", `${y}px`);
+        const rotY = ((x / rect.width) - 0.5) * 9;
+        const rotX = ((y / rect.height) - 0.5) * -9;
+        el.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-5px)`;
+      };
+
+      const handleMouseLeave = () => {
+        const el = cardRef.current;
+        if (!el) return;
+        el.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+      };
+
+      const badgeMeta = {
+        slides: { text: "Slides • محاضرات", cls: "badge-slides" },
+        quiz: { text: "Quiz & Bank • أسئلة", cls: "badge-quiz" },
+        videos: { text: "Videos • فيديوهات", cls: "badge-videos" }
+      }[item.category] || { text: "Slides", cls: "badge-slides" };
+
+      return (
+        <article
+          ref={cardRef}
+          className="resource-card"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div>
+            <div className="card-badges">
+              <span className="badge-subject en">{item.subject}</span>
+              <span className={`badge-type ${badgeMeta.cls}`}>{badgeMeta.text}</span>
+            </div>
+            <div className="card-content" style={{ marginTop: "14px" }}>
+              <h3 className="en" style={{ direction: "auto", textAlign: "start" }}>{item.title}</h3>
+              <div className="card-sub">{item.doctor || "Google Drive"}</div>
+            </div>
+          </div>
+
+          <div className="card-footer">
+            <a href={item.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              فتح في Drive
+            </a>
+
+            <button className="btn btn-glass icon-btn" onClick={() => onCopy(item.url)} title="نسخ الرابط">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+                <rect width="14" height="14" x="8" y="8" rx="2"/>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+              </svg>
+            </button>
+
+            {isAdmin && (
+              <button className="btn btn-glass icon-btn btn-delete" onClick={() => onDelete(item.id)} title="حذف العنصر">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+            )}
+          </div>
+        </article>
+      );
+    }
+
+    function App() {
+      const initialList = useMemo(() => {
+        try {
+          return JSON.parse(document.getElementById("initial-data").textContent.trim());
+        } catch {
+          return [];
+        }
+      }, []);
+
+      const [resources, setResources] = useState(initialList);
+      const [subject, setSubject] = useState("All");
+      const [category, setCategory] = useState("all");
+      const [search, setSearch] = useState("");
+      const [theme, setTheme] = useState(() => localStorage.getItem("gd_theme") || "light");
+      const [isAdmin, setIsAdmin] = useState(false);
+      const [showAuthModal, setShowAuthModal] = useState(false);
+      const [showManageModal, setShowManageModal] = useState(false);
+      const [passwordInput, setPasswordInput] = useState("");
+      const [toastMsg, setToastMsg] = useState("");
+
+      const [formState, setFormState] = useState({
+        subject: "Anatomy",
+        category: "slides",
+        title: "",
+        doctor: "",
+        url: ""
+      });
+
+      const clickTracker = useRef({ count: 0, timer: null });
+      const gridRef = useRef(null);
+
+      const triggerToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(""), 3400);
+      };
+
+      useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("gd_theme", theme);
+      }, [theme]);
+
+      useEffect(() => {
+        if (window.location.hash === "#admin") {
+          setShowAuthModal(true);
+        }
+        gsap.from(".gs-hero", { opacity: 0, y: 28, duration: 0.8, ease: "power3.out" });
+      }, []);
+
+      const filteredResources = useMemo(() => {
+        const q = search.trim().toLowerCase();
+        return resources.filter((item) => {
+          const matchSubj = subject === "All" || item.subject === subject;
+          const matchCat = category === "all" || item.category === category;
+          const matchQ =
+            !q ||
+            item.title.toLowerCase().includes(q) ||
+            item.subject.toLowerCase().includes(q) ||
+            (item.doctor && item.doctor.toLowerCase().includes(q));
+          return matchSubj && matchCat && matchQ;
+        });
+      }, [resources, subject, category, search]);
+
+      useEffect(() => {
+        if (!gridRef.current) return;
+        const cards = gridRef.current.querySelectorAll(".resource-card");
+        if (cards.length) {
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 26, rotateX: 8, scale: 0.96 },
+            { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 0.48, stagger: 0.05, ease: "power3.out", clearProps: "transform" }
+          );
+        }
+      }, [filteredResources]);
+
+      const handleLogoSecretClick = (e) => {
+        e.preventDefault();
+        setSubject("All");
+        setCategory("all");
+        setSearch("");
+
+        clickTracker.current.count += 1;
+        clearTimeout(clickTracker.current.timer);
+        clickTracker.current.timer = setTimeout(() => {
+          clickTracker.current.count = 0;
+        }, 1500);
+
+        if (clickTracker.current.count >= 5) {
+          clickTracker.current.count = 0;
+          if (isAdmin) {
+            setShowManageModal(true);
+          } else {
+            setShowAuthModal(true);
+          }
+        }
+      };
+
+      const handleVerifyPassword = (e) => {
+        e.preventDefault();
+        if (passwordInput === ADMIN_PASSWORD) {
+          setIsAdmin(true);
+          setShowAuthModal(false);
+          setPasswordInput("");
+          triggerToast("تم تفعيل وضع التحكم بنجاح");
+        } else {
+          triggerToast("كلمة المرور غير صحيحة");
+        }
+      };
+
+      const handleAddItem = (e) => {
+        e.preventDefault();
+        if (!isAdmin) return;
+        const newItem = {
+          id: Date.now(),
+          subject: formState.subject,
+          category: formState.category,
+          title: formState.title.trim(),
+          doctor: formState.doctor.trim() || "Google Drive",
+          url: formState.url.trim()
+        };
+        setResources((prev) => [newItem, ...prev]);
+        setFormState({ ...formState, title: "", doctor: "", url: "" });
+        triggerToast("تمت الإضافة! اضغط 'تحميل index.html' لحفظ التعديل ورفعه على GitHub.");
+      };
+
+      const handleDeleteItem = (id) => {
+        if (!isAdmin) return;
+        setResources((prev) => prev.filter((item) => item.id !== id));
+        triggerToast("تم حذف العنصر. تذكر تحميل index.html المحدّث لرفعه.");
+      };
+
+      const exportCleanIndexHtml = () => {
+        if (!isAdmin) return;
+        setShowManageModal(false);
+
+        const clone = document.documentElement.cloneNode(true);
+        clone.setAttribute("data-theme", "light");
+        const dataScript = clone.querySelector("#initial-data");
+        if (dataScript) {
+          dataScript.textContent = "\n" + JSON.stringify(resources, null, 2) + "\n  ";
+        }
+        const rootDiv = clone.querySelector("#root");
+        if (rootDiv) {
+          rootDiv.innerHTML = "";
+        }
+
+        const htmlString = "<!DOCTYPE html>\n" + clone.outerHTML;
+        const blob = new Blob([htmlString], { type: "text/html;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "index.html";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        triggerToast("تم تحميل ملف index.html المحدّث وجاهز للرفع على GitHub!");
+      };
+
+      const slidesCount = resources.filter((r) => r.category === "slides").length;
+      const extrasCount = resources.filter((r) => r.category !== "slides").length;
+
+      return (
+        <>
+          <header>
+            <div className="container nav-inner">
+              <a href="#" className="brand" onClick={handleLogoSecretClick}>
+                <div className="brand-logo" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                  </svg>
+                </div>
+                <div className="brand-title">
+                  <h1 className="en">Nursing Group D Portal</h1>
+                  <span>بوابة المحاضرات والأسئلة &bull; جروب D</span>
+                </div>
+              </a>
+
+              <div className="nav-actions">
+                {isAdmin && (
+                  <>
+                    <button className="btn btn-primary" onClick={() => setShowManageModal(true)}>
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                      <span className="hide-mobile">إدارة الروابط</span>
+                    </button>
+                    <button
+                      className="btn btn-glass icon-btn"
+                      onClick={() => {
+                        setIsAdmin(false);
+                        if (window.location.hash === "#admin") {
+                          history.replaceState(null, "", window.location.pathname);
+                        }
+                        triggerToast("تم قفل وضع الإدارة");
+                      }}
+                      title="قفل وضع الإدارة"
+                    >
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                        <rect width="18" height="11" x="3" y="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+
+                <button
+                  className="btn btn-glass icon-btn"
+                  onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+                  aria-label="تبديل المظهر"
+                >
+                  {theme === "dark" ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+                      <circle cx="12" cy="12" r="4" />
+                      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+                      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <main className="container">
+            <section className="hero gs-hero">
+              <div className="hero-frame">
+                <div className="hero-box">
+                  <div>
+                    <div className="hero-pill">
+                      <span className="live-dot"></span>
+                      <span className="en">Nursing Group D</span> &bull; الأرشيف الأكاديمي
+                    </div>
+                    <h2>
+                      منصة <span className="gradient-text">Nursing Group D</span> للمحاضرات وبنوك الأسئلة
+                    </h2>
+                    <div className="search-wrapper">
+                      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                      </svg>
+                      <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="ابحث باسم المحاضرة، المادة، أو اسم الدكتور..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="telemetry-card">
+                    <div className="ecg-screen">
+                      <div className="ecg-top">
+                        <span>حالة المنصة</span>
+                        <span className="en">GROUP D &bull; LIVE</span>
+                      </div>
+                      <svg className="ecg-svg" viewBox="0 0 360 44" preserveAspectRatio="none">
+                        <path d="M0,22 L65,22 L75,14 L85,22 L105,22 L113,36 L123,4 L133,38 L142,22 L175,22 L188,12 L202,22 L265,22 L273,36 L283,4 L293,38 L302,22 L360,22" />
+                      </svg>
+                    </div>
+                    <div className="kpi-grid">
+                      <div className="kpi-item">
+                        <strong>{SUBJECTS.length - 1}</strong>
+                        <span>المواد الدراسية</span>
+                      </div>
+                      <div className="kpi-item">
+                        <strong>{slidesCount}</strong>
+                        <span>محاضرات Slides</span>
+                      </div>
+                      <div className="kpi-item">
+                        <strong>{extrasCount}</strong>
+                        <span>أسئلة وفيديوهات</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div className="section-title">
+                المواد الدراسية (<span className="en">Subjects</span>)
+              </div>
+
+              <div className="subjects-scroller">
+                {SUBJECTS.map((s) => {
+                  const count =
+                    s.key === "All"
+                      ? resources.length
+                      : resources.filter((r) => r.subject === s.key).length;
+                  return (
+                    <button
+                      key={s.key}
+                      className={`subject-chip ${subject === s.key ? "active" : ""}`}
+                      onClick={() => setSubject(s.key)}
+                    >
+                      {s.isEn ? <span className="en">{s.label}</span> : s.label}
+                      <span className="chip-count">{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="category-tabs" role="tablist">
+                {CATEGORIES.map((c) => (
+                  <button
+                    key={c.key}
+                    className={`cat-tab ${category === c.key ? "active" : ""}`}
+                    onClick={() => setCategory(c.key)}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="cards-grid" ref={gridRef}>
+                {filteredResources.length === 0 ? (
+                  <div className="empty-box">لا توجد ملفات مطابقة لهذا البحث حالياً.</div>
+                ) : (
+                  filteredResources.map((item) => (
+                    <ResourceCard
+                      key={item.id}
+                      item={item}
+                      isAdmin={isAdmin}
+                      onCopy={(url) => {
+                        navigator.clipboard.writeText(url);
+                        triggerToast("تم نسخ رابط Google Drive");
+                      }}
+                      onDelete={handleDeleteItem}
+                    />
+                  ))
+                )}
+              </div>
+            </section>
+          </main>
+
+          <footer>
+            <div className="container">
+              <span className="en">Nursing Group D Portal</span> &bull; بوابة المحاضرات وبنوك الأسئلة
+            </div>
+          </footer>
+
+          {/* Admin Password Modal */}
+          {showAuthModal && (
+            <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowAuthModal(false)}>
+              <div className="modal-panel" style={{ maxWidth: "400px" }}>
+                <div className="modal-top">
+                  <h3>دخول المسؤول (Admin)</h3>
+                  <button className="btn btn-glass icon-btn" onClick={() => setShowAuthModal(false)}>
+                    ✕
+                  </button>
+                </div>
+                <form onSubmit={handleVerifyPassword}>
+                  <div className="field">
+                    <label>كلمة المرور</label>
+                    <input
+                      type="password"
+                      autoFocus
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                      placeholder="أدخل كلمة مرور المسؤول..."
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
+                    تفعيل وضع التحكم
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Manage Links Modal */}
+          {showManageModal && isAdmin && (
+            <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowManageModal(false)}>
+              <div className="modal-panel">
+                <div className="modal-top">
+                  <h3>إضافة رابط Google Drive جديد</h3>
+                  <button className="btn btn-glass icon-btn" onClick={() => setShowManageModal(false)}>
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleAddItem}>
+                  <div className="field">
+                    <label>المادة الدراسية</label>
+                    <select
+                      value={formState.subject}
+                      onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
+                    >
+                      <option value="Anatomy">Anatomy (التشريح)</option>
+                      <option value="Physiology">Physiology (وظائف الأعضاء)</option>
+                      <option value="Microbiology">Microbiology (الميكروبيولوجي)</option>
+                      <option value="Biochemistry">Biochemistry (الكيمياء الحيوية)</option>
+                      <option value="Computer Science">Computer Science (حاسب آلي)</option>
+                    </select>
+                  </div>
+
+                  <div className="field">
+                    <label>القسم</label>
+                    <select
+                      value={formState.category}
+                      onChange={(e) => setFormState({ ...formState, category: e.target.value })}
+                    >
+                      <option value="slides">محاضرات / Slides</option>
+                      <option value="quiz">أسئلة / Quiz &amp; Banks</option>
+                      <option value="videos">فيديوهات / Videos</option>
+                    </select>
+                  </div>
+
+                  <div className="field">
+                    <label>عنوان المحاضرة أو الملف</label>
+                    <input
+                      type="text"
+                      value={formState.title}
+                      onChange={(e) => setFormState({ ...formState, title: e.target.value })}
+                      placeholder="مثال: Lecture 01 - Introduction to Anatomy"
+                      required
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>اسم الدكتور أو ملاحظة (اختياري)</label>
+                    <input
+                      type="text"
+                      value={formState.doctor}
+                      onChange={(e) => setFormState({ ...formState, doctor: e.target.value })}
+                      placeholder="مثال: د. أحمد / PDF Slides"
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label>رابط Google Drive</label>
+                    <input
+                      type="url"
+                      value={formState.url}
+                      onChange={(e) => setFormState({ ...formState, url: e.target.value })}
+                      placeholder="https://drive.google.com/..."
+                      required
+                    />
+                  </div>
+
+                  <div className="modal-actions">
+                    <button type="submit" className="btn btn-primary">
+                      إضافة للموقع
+                    </button>
+                    <button type="button" className="btn btn-glass" onClick={exportCleanIndexHtml}>
+                      تحميل index.html
+                    </button>
+                  </div>
+                </form>
+
+                <div className="tip-box">
+                  <strong>تحديث GitHub:</strong> بعد إضافة أو حذف أي رابط، اضغط <b>تحميل index.html</b> ثم ارفعه مكان الملف القديم في مستودع GitHub ليظهر التحديث للجميع.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {toastMsg && <div className="toast">{toastMsg}</div>}
+        </>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
